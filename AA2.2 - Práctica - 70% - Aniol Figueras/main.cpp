@@ -23,13 +23,13 @@ struct Player {
 };
 
 struct Enemy {
-    char tipo;
+    char type;
     int x = 0;
     int y = 0;
     int hp = 0;
     int maxHp = 0;
     int damage = 0;
-    bool vivo = false;
+    bool alive = false;
 };
 
 Player player;
@@ -56,9 +56,9 @@ void CreateMap()
             bool isEnemy = false;
             for (int i = 0; i < enemies.size(); i++)
             {
-                if (enemies[i].vivo && enemies[i].x == x && enemies[i].y == y)
+                if (enemies[i].alive && enemies[i].x == x && enemies[i].y == y)
                 {
-                    if (enemies[i].tipo == 'J') 
+                    if (enemies[i].type == 'J') 
                     {
                         ConsoleSetColor(DARKRED, BLACK);
                     }
@@ -67,7 +67,7 @@ void CreateMap()
                         ConsoleSetColor(RED, BLACK);
                     }
 
-                    std::cout << enemies[i].tipo << " ";
+                    std::cout << enemies[i].type << " ";
                     isEnemy = true;
                     break;
                 }
@@ -144,7 +144,7 @@ void MoveEnemies()
 {
     for (int i = 0; i < enemies.size(); i++)
     {
-        if (!enemies[i].vivo || enemies[i].tipo == 'J') continue;
+        if (!enemies[i].alive || enemies[i].type == 'J') continue;
 
         int direction = rand() % 4;
         int directionX = enemies[i].x, directionY = enemies[i].y;
@@ -337,7 +337,7 @@ int main()
             bool enemieFound = false;
             for (int i = 0; i < enemies.size(); i++)
             {
-                if (enemies[i].vivo && enemies[i].x == newX && enemies[i].y == newY)
+                if (enemies[i].alive && enemies[i].x == newX && enemies[i].y == newY)
                 {
                     EnemieInCombat = i;
                     enemieFound = true;
@@ -348,7 +348,7 @@ int main()
             if (enemieFound)
             {
                 inCombat = true;
-                std::cout << "\n>>> YOUR GOING TO FIGHT AGAINST " << GetEnemyName(enemies[EnemieInCombat].tipo) << "! <<<\n";
+                std::cout << "\n>>> YOUR GOING TO FIGHT AGAINST " << GetEnemyName(enemies[EnemieInCombat].type) << "! <<<\n";
                 continue;
             }
 
@@ -402,7 +402,7 @@ int main()
             Enemy& actualEnemie = enemies[EnemieInCombat];
 
             std::cout << "[" << player.name << "] HP:[" << player.hp << "/" << player.maxHp << "]" << std::endl;
-            std::cout << "[" << GetEnemyName(actualEnemie.tipo) << "] HP:[" << actualEnemie.hp << "/" << actualEnemie.maxHp << "]" << std::endl;
+            std::cout << "[" << GetEnemyName(actualEnemie.type) << "] HP:[" << actualEnemie.hp << "/" << actualEnemie.maxHp << "]" << std::endl;
             std::cout << std::endl;
             std::cout << "What will you do?" << std::endl;
             std::cout << "attack | inventory | status | help" << std::endl;
@@ -415,12 +415,12 @@ int main()
 
             if (input == "attack")
             {
-                int dano = (player.sword > 0) ? 28 : 8;
+                int damage = (player.sword > 0) ? 28 : 8;
 
                 if (rand() % 10 < 9)
                 {
-                    actualEnemie.hp -= dano;
-                    std::cout << "You hit for " << dano << " damage!\n";
+                    actualEnemie.hp -= damage;
+                    std::cout << "You hit for " << damage << " damage!\n";
                 }
                 else
                 {
@@ -457,6 +457,7 @@ int main()
             else if (input == "status")
             {
                 PrintUI();
+                ConsoleWait(3000);
             }
             else if (input == "help")
             {
@@ -464,6 +465,7 @@ int main()
                 std::cout << "inventory - To acces and use the objects\n";
                 std::cout << "status - Show your stats/objects\n";
                 std::cout << "help - Show this commands menu\n";
+                ConsoleWait(3000);
             }
 
             if (actualEnemie.hp > 0)
@@ -481,12 +483,12 @@ int main()
 
             if (actualEnemie.hp <= 0)
             {
-                std::cout << "\nYou defeated the " << GetEnemyName(actualEnemie.tipo) << "!\n";
+                std::cout << "\nYou defeated the " << GetEnemyName(actualEnemie.type) << "!\n";
                 map[actualEnemie.y][actualEnemie.x] = '.';
-                actualEnemie.vivo = false;
+                actualEnemie.alive = false;
                 inCombat = false;
 
-                if (actualEnemie.tipo == 'J')
+                if (actualEnemie.type == 'J')
                 {
                     ConsoleClear();
                     std::cout << "====================================\n";
